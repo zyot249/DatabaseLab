@@ -1,0 +1,150 @@
+                                                                        SQL
+-- Create Database
+CREATE DATABASE name 
+[[WITH]
+[OWNER owner]
+[TEMPLATE template]
+[ENCODING encoding]
+[TABLESPACE tablespace]
+[CONNECTIONLIMIT connlimit]]
+
+-- Drop Database
+DROP DATABASE [ IF EXISTS ] name
+
+-- Create Schema
+CREATE SCHEMA [IF NOT EXISTS] [schemaname]
+[AUTHORIZATION username [schema elements]]
+
+-- Drop Schema
+DROP SCHEMA [IF EXISTS] schemaname [CASCADE | RESTRICT]
+	+ RESTRICT : remove only if empty
+	+ CASCADE : remove although not empty
+
+-- Create Table
+CREATE TABLE tablename (column datatype [[NOT NULL] [PRIMARY KEY] [DEFAULT], ...,
+			constraint,...)
+
+-- Add additional table elements
+ALTER TABLE tablename action
+	+ Check
+ALTER TABLE tablename ADD CONSTRAINT constraint_name CHECK(condition)
+	+ Foreign key
+ALTER TABLE tablename ADD CONSTRAINT constraint_name FOREIGN KEY ( column_name [, ... ] ) REFERENCES reftable [ (refcolumn [, ... ] ) ]
+[ MATCH FULL | MATCH PARTIAL | MATCH SIMPLE ]
+[ ON DELETE action ] [ ON UPDATE action ]
+[DEFERRABLE | NOT DEFERRABLE ]
+[ INITIALLY DEFERRED | INITIALLY IMMEDIATE ]
+
+	+ Primary key
+ALTER TABLE tablename ADD CONSTRAINT constraint_name PRIMARY KEY (column_name)
+
+	+ other action
+		./ ADD COLUMN
+		./ DROP COLUMN
+		./ ALTER COLUMN
+		./ SET DEFAULT
+		./ DROP DEFAULT
+		./ SET NOT NULL
+		./ DROP NOT NULL
+		./ SET STATISTICS
+		./ SET STORAGE
+		./ DROP CONSTRAINT
+		./ DISABLE TRIGGER
+		./ ENABLE TRIGGER
+-- Drop Table
+DROP TABLE tablename [CASCADE | RESTRICT]
+
+-- Insert Data
+INSERT INTO table [(columnlist)] VALUES (valuelist)
+
+-- Update Data
+UPDATE table SET column = value [WHERE condition]
+
+-- Delete Data
+DELETE FROM table [WHERE condition]
+
+-- Select Data
+[ WITH [ RECURSIVE ] with_query [, ...] ]
+SELECT [ ALL | DISTINCT [ ON ( expression [, ...] ) ] ] * | expression [ [ AS ]
+output_name ] [, ...]
+[ FROM from_item [, ...] ]
+[ WHERE condition ]
+[ GROUP BY expression [, ...] ]
+[ HAVING condition [, ...] ]
+[ WINDOW window_name AS ( window_definition ) [, ...] ]
+[ { UNION | INTERSECT | EXCEPT } [ ALL | DISTINCT ] select ]
+[ ORDER BY expression [ ASC | DESC | USING operator ] [ NULLS { FIRST |
+LAST } ] [, ...] ]
+[ LIMIT { count | ALL } ]
+[ OFFSET start [ ROW | ROWS ] ]
+[ FETCH { FIRST | NEXT } [ count ] { ROW | ROWS } ONLY ]
+[ FOR { UPDATE | SHARE } [ OF table_name [, ...] ] [ NOWAIT ] [...] ]
+
+	+ Join
+	from_item1 join_type from_item2 [ON(join_condition) | USING(join_column[, ...]]
+	join_type: [ INNER ] JOIN, LEFT [ OUTER ] JOIN, RIGHT [ OUTER ] JOIN, FULL [ OUTER ] JOIN, CROSS JOIN , NATURAL JOIN
+
+-- View
+CREATE [ OR REPLACE ] [ TEMP | TEMPORARY ] VIEW viewname
+[ (column_name,...] ) ] AS query
+[ WITH [ CASCADED | LOCAL ] CHECK OPTION ]
+
+-- Function
+	+ Procedure
+CREATE [OR REPLACE] FUNCTION functionname ([ [argmode]
+[argname] argtype ,...] ) [RETURNS returntype] AS $$
+DECLARE <variable declarations>
+BEGIN
+<code section>
+END;
+$$
+LANGUAGE languagename
+[ IMMUTABLE | STABLE | VOLATILE | CALLED ON NULL INPUT | RETURNS NULL ON NULL INPUT | STRICT | SECURITY INVOKER | SECURITY DEFINER ]
+	+ Trigger
+
+	CREATE TRIGGER name
+	{ BEFORE | AFTER | INSTEAD OF} {event [OR ... ] } ON table/view
+	[ FOR [ EACH ] { ROW | STATEMENT }]
+	[ WHEN ( condition ) ]
+	EXECUTE PROCEDURE function (arguments)
+
+	+ PLPGSQL
+	./ Assign value --> variables
+	var := expression;
+	
+	./ Select into statement
+	DELARE var tablename%ROWTYPE;
+	SELECT INTO var [, ...] column [, ...] clause;
+	
+	./ Condition Statements
+	IF condition1 THEN
+		<statements1>
+	ELSEIF condition2 THEN
+		<statements2>
+	ELSE
+		<statements3>
+	END IF;
+	
+	./ Loop Statements
+	LOOP
+		<statements>
+	EXIT [ WHEN expression];
+	END LOOP;
+
+	WHILE condition LOOP
+		<statements>
+	END LOOP;
+
+	FOR variable IN select_clause LOOP
+		<statements>
+	END LOOP;
+
+	./ Trapping errors
+	BEGIN
+		statements
+	EXCEPTION
+		WHEN condition [ OR condition ... ] THEN
+			handler_statements
+		[ WHEN condition [ OR condition ... ] THEN
+			handler_statements ... ]
+	END;

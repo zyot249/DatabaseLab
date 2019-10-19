@@ -1,0 +1,5 @@
+command for pgadmin 4
+// restore database
+pg_restore -d db_name backup_file_path
+// backup database
+pg_dump -Fc db_name > backup_file

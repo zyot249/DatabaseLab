@@ -1,0 +1,24 @@
+Isolation Level in SQL Server
+quy định mức độ cô lập của dữ liệu mà các transaction có thể truy cập
+1, Read Uncommitted
+ở mức này, 1 transaction có thể truy vấn dữ liệu ngay cả khi dữ liệu đang đc cập nhật bởi 1 transaction khác, và nó sẽ nhận đc dữ liệu hiện tại kể cả khi nó chưa đc commit
+
+2, Read committed (default)
+ở mức này, transaction sẽ chỉ đọc được dữ liệu nếu nó đã đc committed (cập nhật xong)
+
+3, Repeatable read
+Cũng như read committed nhưng thêm việc không cho ghi vào dữ liệu đang được đọc
+tuy nhiên vẫn k bảo vệ đc dữ liệu khỏi việc insert hay delete
+
+4, Serializable
+bảo vệ thêm dữ liệu với việc insert hay delete
+
+5, Snapshot
+tương đương serializable nhưng hoạt động ở 1 phương thức khác
+
+cài đặt các isolation levels:
+set transaction isolation level read committed
+set transaction isolation level read uncommitted
+set transaction isolation level repeatable read
+set transaction isolation level serializable
+set transaction isolation level snapshot
